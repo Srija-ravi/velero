@@ -1,0 +1,77 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: backupstoragelocations.velero.io
+  labels:
+    app.kubernetes.io/name: velero
+    app.kubernetes.io/version: v1.14.0
+spec:
+  group: velero.io
+  names:
+    kind: BackupStorageLocation
+    listKind: BackupStorageLocationList
+    plural: backupstoragelocations
+    singular: backupstoragelocation
+  scope: Namespaced
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                provider:
+                  description: The provider of the storage.
+                  type: string
+                objectStorage:
+                  type: object
+                  description: Configuration specific to object storage.
+                  properties:
+                    bucket:
+                      description: The bucket name to use for backups.
+                      type: string
+                    prefix:
+                      description: The prefix under which to store backups.
+                      type: string
+                config:
+                  description: A key-value map of configuration values for the storage location.
+                  type: object
+                  additionalProperties:
+                    type: string
+                credential:
+                  description: Reference to a specific credential to access the storage location.
+                  type: object
+                  properties:
+                    name:
+                      description: The name of the secret containing credentials for this backup storage location.
+                      type: string
+                    key:
+                      description: The key within the secret containing credentials.
+                      type: string
+                accessMode:
+                  description: Defines how backups stored in this location can be accessed. Valid values are `ReadWrite`, `ReadOnly`, or `WriteOnly`.
+                  type: string
+                  enum:
+                    - ReadWrite
+                    - ReadOnly
+                    - WriteOnly
+            status:
+              type: object
+              properties:
+                phase:
+                  description: The current phase of the backup storage location.
+                  type: string
+                lastValidationTime:
+                  description: The last time this backup storage location was validated.
+                  type: string
+                accessible:
+                  description: Indicates if the location is accessible.
+                  type: boolean
+  conversion:
+    strategy: None
+  preserveUnknownFields: false
+

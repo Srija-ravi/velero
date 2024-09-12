@@ -1,0 +1,91 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: backups.velero.io
+  labels:
+    app.kubernetes.io/name: velero
+    app.kubernetes.io/version: v1.14.0
+spec:
+  group: velero.io
+  names:
+    kind: Backup
+    listKind: BackupList
+    plural: backups
+    singular: backup
+  scope: Namespaced
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                includedNamespaces:
+                  description: A list of namespaces to include in the backup. If not specified, all namespaces are included.
+                  type: array
+                  items:
+                    type: string
+                excludedNamespaces:
+                  description: A list of namespaces to exclude from the backup.
+                  type: array
+                  items:
+                    type: string
+                includedResources:
+                  description: A list of resources to include in the backup. If not specified, all resources are included.
+                  type: array
+                  items:
+                    type: string
+                excludedResources:
+                  description: A list of resources to exclude from the backup.
+                  type: array
+                  items:
+                    type: string
+                labelSelector:
+                  description: A label selector to filter resources to be backed up.
+                  type: object
+                snapshotVolumes:
+                  description: Whether or not to take snapshots of persistent volumes.
+                  type: boolean
+                ttl:
+                  description: The TTL for this backup.
+                  type: string
+                volumeSnapshotLocations:
+                  description: The name(s) of the VolumeSnapshotLocation to use for this backup.
+                  type: array
+                  items:
+                    type: string
+                hooks:
+                  description: Hooks to execute before or after a backup operation.
+                  type: object
+            status:
+              type: object
+              properties:
+                phase:
+                  description: The current phase of the backup.
+                  type: string
+                expiration:
+                  description: When the backup will be deleted.
+                  type: string
+                errors:
+                  description: The number of errors encountered during the backup.
+                  type: integer
+                warnings:
+                  description: The number of warnings encountered during the backup.
+                  type: integer
+                startTimestamp:
+                  description: When the backup was started.
+                  type: string
+                completionTimestamp:
+                  description: When the backup was completed.
+                  type: string
+                version:
+                  description: The Velero server version that processed the backup.
+                  type: string
+  conversion:
+    strategy: None
+  preserveUnknownFields: false
+

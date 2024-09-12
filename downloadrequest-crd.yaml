@@ -1,0 +1,52 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: downloadrequests.velero.io
+  labels:
+    app.kubernetes.io/name: velero
+    app.kubernetes.io/version: v1.14.0
+spec:
+  group: velero.io
+  names:
+    kind: DownloadRequest
+    listKind: DownloadRequestList
+    plural: downloadrequests
+    singular: downloadrequest
+  scope: Namespaced
+  versions:
+    - name: v1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            spec:
+              type: object
+              properties:
+                target:
+                  description: Target refers to the backup or restore log file that needs to be downloaded.
+                  type: object
+                  properties:
+                    kind:
+                      description: Kind of the target (e.g., Backup or Restore).
+                      type: string
+                    name:
+                      description: Name of the backup or restore object.
+                      type: string
+                    namespace:
+                      description: Namespace where the backup or restore is located.
+                      type: string
+            status:
+              type: object
+              properties:
+                phase:
+                  description: Current phase of the download request.
+                  type: string
+                downloadURL:
+                  description: URL where the requested file can be downloaded.
+                  type: string
+  conversion:
+    strategy: None
+  preserveUnknownFields: false
+
