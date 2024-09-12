@@ -1,0 +1,36 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: lab-main-d-aor-velero-ngx1
+  namespace: velero
+  annotations:
+    # AWS to get X-Forwarded-For headers and other things
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+    #service.beta.kubernetes.io/aws-load-balancer-proxy-protocol: "*"
+    #service.beta.kubernetes.io/aws-load-balancer-internal: 0.0.0.0/0
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: "arn:aws:acm:us-west-2:303027209135:certificate/feca0b40-0ce4-4c3b-a4e9-b62e7ccb9eb2"
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+    external-dns.alpha.kubernetes.io/hostname: test.ngnx.aort-eks-1.eks.aort.theplatform.com
+    #service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: env=lab, clusterTitle=lab-main-d-aor-velero-ngx1, namespace=velero, serviceshortname=velero, cluster_name=aort-eks-1
+  labels:
+    environmentShortName: lab
+    regionShortName: main
+    partitionShortName: d
+    serviceShortName: aor
+    clusterSuffix: ngx1
+    clusterTitle: lab-main-d-aor-velero-ngx1
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 80
+    name: ssl-service
+  - port: 8004
+    targetPort: 8004
+    name: jmx
+  - port: 5004
+    targetPort: 5004
+    name: debug
+  selector:
+    clusterTitle: lab-main-d-aor-velero-ngx1
