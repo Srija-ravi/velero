@@ -1,0 +1,1 @@
+1. Deployed in specific node only just for tetsing , because some nodes has taints and got daemonpods in pending state , so for tetsing just made (daemon set , velero deployment , ngnix all in only one node)
