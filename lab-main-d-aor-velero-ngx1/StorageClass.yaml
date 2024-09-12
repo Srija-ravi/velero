@@ -1,0 +1,18 @@
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: lab-main-d-aor-velero-ngx1
+  labels:
+    environmentShortName: lab
+    regionShortName: main
+    partitionShortName: d
+    serviceShortName: velero
+    clusterSuffix: ngx1
+    clusterTitle: lab-main-d-aor-velero-ngx1
+provisioner: efs.csi.aws.com
+parameters:
+  provisioningMode: efs-ap
+  # EFS File System Value - Has to be Created Manually in AWS Console
+  # Kubernetes PersistenVolume will be Created Dyanamically (Automatically)
+  fileSystemId: fs-0e44f45c0ab11e570
+  directoryPerms: "700"
