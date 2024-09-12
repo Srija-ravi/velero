@@ -423,5 +423,83 @@ sravik158@INSML-52DPMD6M Downloads %
 
   ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+sravik158@INSML-52DPMD6M Downloads % velero backup describe nginx-backup -n velero
+Name:         nginx-backup
+Namespace:    velero
+Labels:       velero.io/storage-location=default
+Annotations:  velero.io/source-cluster-k8s-gitversion=v1.29.7-eks-2f46c53
+              velero.io/source-cluster-k8s-major-version=1
+              velero.io/source-cluster-k8s-minor-version=29+
 
-  
+Phase:  Failed (run `velero backup logs nginx-backup` for more information)
+
+
+Namespaces:
+  Included:  velero
+  Excluded:  <none>
+
+Resources:
+  Included:        configmaps
+  Excluded:        <none>
+  Cluster-scoped:  auto
+
+Label selector:  <none>
+
+Or label selector:  <none>
+
+Storage Location:  default
+
+Velero-Native Snapshot PVs:  auto
+Snapshot Move Data:          auto
+Data Mover:                  velero
+
+TTL:  720h0m0s
+
+CSISnapshotTimeout:    0s
+ItemOperationTimeout:  0s
+
+Hooks:  <none>
+
+Backup Format Version:  
+
+Started:    <n/a>
+Completed:  <n/a>
+
+Expiration:  <nil>
+
+Backup Volumes:
+  <error getting backup volume info: Get "https://86F41FBB1702E144292913AFC0BA0B3C.gr7.us-west-2.eks.amazonaws.com/apis/velero.io/v1/namespaces/velero/downloadrequests/nginx-backup-307682a2-2fbd-4135-a59f-e9ef4f34efc7": context deadline exceeded>
+
+
+   ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+sravik158@INSML-52DPMD6M Downloads % kubectl describe backupstoragelocation -n velero
+Name:         default
+Namespace:    velero
+Labels:       tags.datadoghq.com/env=lab
+              tags.datadoghq.com/service=velero-ews1
+              tags.datadoghq.com/version=2.0.22
+Annotations:  cts/k8cluster: eks1
+API Version:  velero.io/v1
+Kind:         BackupStorageLocation
+Metadata:
+  Creation Timestamp:  2024-09-12T09:56:18Z
+  Generation:          434
+  Resource Version:    705158157
+  UID:                 6d9344a3-ac20-442d-8c43-08d64e1cad40
+Spec:
+  Config:
+    Region:            us-west-2
+    s3ForcePathStyle:  false
+  Object Storage:
+    Bucket:  velero-backups-lab
+    Prefix:  backups
+  Provider:  aws
+Status:
+  Last Validation Time:  2024-09-12T17:05:37Z
+  Phase:                 Available
+Events:                  <none>
+sravik158@INSML-52DPMD6M Downloads % 
+
+
