@@ -1,0 +1,168 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: lab-main-d-aor-velero-ews1
+  namespace: velero
+  # set annotation to the ARN of the IAM role to be assumed
+  annotations:
+    kubernetes.io/service-account.name: lab-main-d-aor-velero-ews1
+    eks.amazonaws.com/role-arn: arn:aws:iam::303027209135:role/OneCloud/CustomerManaged_Velero
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lab-main-d-aor-velero-ews1
+  namespace: velero
+  #----------------------------------------------------------------------------
+  # Indexed select on these fields
+  labels:
+    environmentShortName: lab
+    regionShortName: main
+    partitionShortName: d
+    serviceShortName: velero
+    clusterSuffix: ews1
+    clusterTitle: lab-main-d-aor-velero-ews1
+    tags.datadoghq.com/env: lab
+    tags.datadoghq.com/service: velero-ews1
+    tags.datadoghq.com/version: 2.0.22
+  annotations:
+    # cluster designator
+    cts/k8cluster: eks1
+spec:
+  #----------------------------------------------------------------------------
+  # This section defines the general cluster setup
+  #
+  # how big the cluster is
+  replicas: 1
+  # just for historical - not used at this time
+  revisionHistoryLimit: 1
+  # how to update
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      # max number of nodes below desired replicas (rounded up)
+      maxUnavailable: 25%
+      # max number of nodes above desired replicas (rounded up)
+      maxSurge: 25%
+  # which pods to use (e.g. the name of the replica set)
+  selector:
+    matchLabels:
+      clusterTitle: lab-main-d-aor-velero-ews1
+  #----------------------------------------------------------------------------
+  # This section defines the pod(s) that will be created (e.g. replica set)
+  template:
+    metadata:
+      # these selectors allow you to use selectors on pods
+      labels:
+        environmentShortName: lab
+        regionShortName: main
+        partitionShortName: d
+        serviceShortName: velero
+        clusterSuffix: ews1
+        clusterTitle: lab-main-d-aor-velero-ews1
+        tags.datadoghq.com/env: lab
+        tags.datadoghq.com/service: velero-ews1
+        tags.datadoghq.com/version: 2.0.22
+        
+      annotations:
+        serviceVersion: 2.0.22
+        "ad.datadoghq.com/upxs3.check_names": '["openmetrics"]'
+        "ad.datadoghq.com/upxs3.init_configs": '[{}]'
+        "ad.datadoghq.com/upxs3.instances": '[{"prometheus_url": "http://%%host%%:8085/metrics","namespace": "csp","metrics": ["*"]}]'
+    #--------------------------------------------------------------------------
+    # This section defines the containers deployed in a pod
+    spec:
+    # set serviceAccountName to the service account with the "eks.amazonaws.com/role-arn" annotation
+      serviceAccountName: lab-main-d-aor-velero-ews1
+      nodeSelector:
+        kubernetes.io/hostname: ip-10-112-142-180.us-west-2.compute.internal
+      initContainers:
+        - name: velero-plugin-for-aws
+          image: velero/velero-plugin-for-aws:v1.5.0
+          volumeMounts:
+            - mountPath: /target
+              name: plugins
+      containers:
+      - name: velero
+        # you must define which image to deploy (manual for now)
+        image: docker-lab.repo.theplatform.com/velero:v1.11.0
+        imagePullPolicy: Always
+        env:
+          - name: DD_ENV
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.labels['tags.datadoghq.com/env']
+          - name: DD_SERVICE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.labels['tags.datadoghq.com/service']
+          - name: DD_VERSION
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.labels['tags.datadoghq.com/version']
+          - name: DD_AGENT_HOST
+            valueFrom:
+              fieldRef:
+                fieldPath: status.hostIP
+          - name: DD_PROFILING_ENABLED
+            value: "false"
+          - name: DD_APM_ENABLED
+            value: "true"
+        ports:
+        - containerPort: 8085
+        command:
+        - /velero
+        - server
+        args:
+        - --default-backup-storage-location=default
+        - --default-volume-snapshot-locations=aws:us-west-2
+        - --features=EnableRestic
+        resources:
+          # memory ~ heap space +10%
+          # CPU ~ no more than 1/8 of memory
+          requests:
+            cpu: 1200m
+            memory: 5G
+          # CPU ~ 4x requested
+          limits:
+            cpu: 2000m
+            memory: 6G
+        volumeMounts:
+        - mountPath: /scratch
+          name: scratch
+          readOnly: false
+        - mountPath: /plugins
+          name: plugins
+
+      - name: alpine-awscli
+        image: alpine:latest
+        command: ['sh']  # Keeps the container running for 1 hour
+        args: ['-c', 'while true; do sleep 3600; done']
+        env:
+          - name: AWS_REGION
+            value: us-west-2
+        resources:
+          requests:
+            cpu: 10m
+            memory: 50Mi
+          limits:
+            cpu: 50m
+            memory: 100Mi
+
+        volumeMounts:
+        - mountPath: /scratch
+          name: scratch
+        - mountPath: /plugins
+          name: plugins
+        lifecycle:
+          postStart:
+            exec:
+              command: ["/bin/sh", "-c", "apk add --no-cache aws-cli"]
+      volumes:
+      - name: lab-main-d-aor-velero-ews1
+        configMap:
+          name: lab-main-d-aor-velero-ews1
+      - name: scratch
+        emptyDir: {}
+      - name: plugins
+        emptyDir: {}
