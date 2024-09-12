@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: lab-main-d-aor-velero-ngx1
+  namespace: velero
+  labels:
+    environmentShortName: lab
+    regionShortName: main
+    partitionShortName: d
+    serviceShortName: velero
+    clusterSuffix: ngx1
+    clusterTitle: lab-main-d-aor-velero-ngx1
+    tags.datadoghq.com/env: lab
+    tags.datadoghq.com/service: velero
+    tags.datadoghq.com/version: 2.0.22
+  
+  annotations:
+    cts/k8cluster: eks1
+    #backup.velero.io/backup-volumes: nginx-pv-storage,thread-dump-storage
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  selector:
+    matchLabels:
+      clusterTitle: lab-main-d-aor-velero-ngx1
+      
+  template:
+    metadata:
+      labels:
+        environmentShortName: lab
+        regionShortName: main
+        partitionShortName: d
+        serviceShortName: velero
+        clusterSuffix: ngx1
+        clusterTitle: lab-main-d-aor-velero-ngx1
+        tags.datadoghq.com/env: lab
+        tags.datadoghq.com/service: velero
+        tags.datadoghq.com/version: 2.0.22
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: ip-10-112-142-180.us-west-2.compute.internal
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        resources:
+          # memory ~ heap space +10%
+          # CPU ~ no more than 1/8 of memory
+          requests:
+            cpu: 1200m
+            memory: 5G
+          # CPU ~ 4x requested
+          limits:
+            cpu: 2000m
+            memory: 6G
+        volumeMounts:
+        - name: nginx-pv-storage
+          mountPath: /usr/share/nginx/html # Mounting path for Nginx content
+        - name: thread-dump-storage #non-pvc data
+          mountPath: "/var/log/nginx"
+        - name: configmap
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+          
+      volumes:
+      - name: configmap
+        configMap:
+          name: lab-main-d-aor-velero-ngx1
+      - name: nginx-pv-storage
+        persistentVolumeClaim:
+          claimName: lab-main-d-aor-velero-ngx1
+      - name: thread-dump-storage
+        emptyDir: {} #The second volume (non-pvc-data) uses an emptyDir, which will be stored on the node's filesystem and not persist beyond the lifecycle of the pod, unless backed up using Velero with Restic.
