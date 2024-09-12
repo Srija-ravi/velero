@@ -1,0 +1,427 @@
+sravik158@INSML-52DPMD6M Downloads % kubectl get pods -n velero
+NAME                                          READY   STATUS    RESTARTS        AGE
+lab-main-d-aor-restic-ews1-w94hf              1/1     Running   1 (6h50m ago)   6h57m
+lab-main-d-aor-velero-ews1-56876984d7-4cmmd   2/2     Running   1 (6h50m ago)   6h57m
+lab-main-d-aor-velero-ngx1-6bd569b7ff-b2kwn   1/1     Running   0  
+
+
+
+sravik158@INSML-52DPMD6M Downloads % kubectl get backup -n velero
+NAME           AGE
+nginx-backup   6h51m
+sravik158@INSML-52DPMD6M Downloads % 
+
+sravik158@INSML-52DPMD6M Downloads % kubectl get backupstoragelocation -n velero
+NAME      AGE
+default   6h58m
+sravik158@INSML-52DPMD6M Downloads % 
+
+
+sravik158@INSML-52DPMD6M Downloads % 
+sravik158@INSML-52DPMD6M Downloads % kubectl describe pod lab-main-d-aor-restic-ews1-w94hf -n velero
+Name:             lab-main-d-aor-restic-ews1-w94hf
+Namespace:        velero
+Priority:         0
+Service Account:  lab-main-d-aor-velero-ews1
+Node:             ip-10-112-142-180.us-west-2.compute.internal/10.112.142.180
+Start Time:       Thu, 12 Sep 2024 15:26:18 +0530
+Labels:           clusterSuffix=ews1
+                  clusterTitle=lab-main-d-aor-restic-ews1
+                  controller-revision-hash=57d445b47b
+                  environmentShortName=lab
+                  partitionShortName=d
+                  pod-template-generation=1
+                  regionShortName=main
+                  serviceShortName=velero
+                  tags.datadoghq.com/env=lab
+                  tags.datadoghq.com/service=restic-ews1
+                  tags.datadoghq.com/version=2.0.22
+Annotations:      serviceVersion: 2.0.22
+Status:           Running
+IP:               100.64.81.121
+IPs:
+  IP:           100.64.81.121
+Controlled By:  DaemonSet/lab-main-d-aor-restic-ews1
+Init Containers:
+  velero-plugin-for-aws:
+    Container ID:   containerd://a2d7cbaafc857457c75390d85d193fc499c70e808079882b06e4a7d1d2cd07e5
+    Image:          velero/velero-plugin-for-aws:v1.5.0
+    Image ID:       docker.io/velero/velero-plugin-for-aws@sha256:3d2ea7aab32d40ca70fb399fe7ebd6c99647c9c13af8b70581c1d9aedc22e347
+    Port:           <none>
+    Host Port:      <none>
+    State:          Terminated
+      Reason:       Completed
+      Exit Code:    0
+      Started:      Thu, 12 Sep 2024 15:26:19 +0530
+      Finished:     Thu, 12 Sep 2024 15:26:19 +0530
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     100m
+      memory:  100Mi
+    Requests:
+      cpu:     50m
+      memory:  50Mi
+    Environment:
+      AWS_STS_REGIONAL_ENDPOINTS:   regional
+      AWS_DEFAULT_REGION:           us-west-2
+      AWS_REGION:                   us-west-2
+      AWS_ROLE_ARN:                 arn:aws:iam::303027209135:role/OneCloud/CustomerManaged_Velero
+      AWS_WEB_IDENTITY_TOKEN_FILE:  /var/run/secrets/eks.amazonaws.com/serviceaccount/token
+    Mounts:
+      /target from plugins (rw)
+      /var/run/secrets/eks.amazonaws.com/serviceaccount from aws-iam-token (ro)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-g58dk (ro)
+Containers:
+  restic:
+    Container ID:  containerd://bca653822c5a65493dbdf0a6f4980270060c6bb5811c9dfaa3c0e6b62c305026
+    Image:         velero/velero:v1.11.0
+    Image ID:      docker-lab.repo.theplatform.com/velero@sha256:93e6ff581bb7478119efb5918d3164d4bd63ad21abc5ef3ed3b8117c180a8f87
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      /velero
+    Args:
+      server
+      --features=EnableRestic
+    State:          Running
+      Started:      Thu, 12 Sep 2024 15:33:21 +0530
+    Last State:     Terminated
+      Reason:       Error
+      Exit Code:    2
+      Started:      Thu, 12 Sep 2024 15:26:24 +0530
+      Finished:     Thu, 12 Sep 2024 15:33:17 +0530
+    Ready:          True
+    Restart Count:  1
+    Limits:
+      cpu:     1
+      memory:  300Mi
+    Requests:
+      cpu:     500m
+      memory:  200Mi
+    Environment:
+      AWS_STS_REGIONAL_ENDPOINTS:   regional
+      AWS_DEFAULT_REGION:           us-west-2
+      AWS_REGION:                   us-west-2
+      AWS_ROLE_ARN:                 arn:aws:iam::303027209135:role/OneCloud/CustomerManaged_Velero
+      AWS_WEB_IDENTITY_TOKEN_FILE:  /var/run/secrets/eks.amazonaws.com/serviceaccount/token
+    Mounts:
+      /plugins from plugins (rw)
+      /scratch from scratch (rw)
+      /var/lib/kubelet/pods from var (rw)
+      /var/run/secrets/eks.amazonaws.com/serviceaccount from aws-iam-token (ro)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-g58dk (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:
+  aws-iam-token:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  86400
+  lab-main-d-aor-velero-ews1:
+    Type:      ConfigMap (a volume populated by a ConfigMap)
+    Name:      lab-main-d-aor-velero-ews1
+    Optional:  false
+  scratch:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+  plugins:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+  var:
+    Type:          HostPath (bare host directory volume)
+    Path:          /var/lib/kubelet/pods
+    HostPathType:  Directory
+  kube-api-access-g58dk:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              kubernetes.io/hostname=ip-10-112-142-180.us-west-2.compute.internal
+Tolerations:                 node.kubernetes.io/disk-pressure:NoSchedule op=Exists
+                             node.kubernetes.io/memory-pressure:NoSchedule op=Exists
+                             node.kubernetes.io/not-ready:NoExecute op=Exists
+                             node.kubernetes.io/pid-pressure:NoSchedule op=Exists
+                             node.kubernetes.io/unreachable:NoExecute op=Exists
+                             node.kubernetes.io/unschedulable:NoSchedule op=Exists
+Events:                      <none>
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+  
+sravik158@INSML-52DPMD6M Downloads % 
+sravik158@INSML-52DPMD6M Downloads % kubectl describe pod lab-main-d-aor-velero-ews1-56876984d7-4cmmd -n velero
+Name:             lab-main-d-aor-velero-ews1-56876984d7-4cmmd
+Namespace:        velero
+Priority:         0
+Service Account:  lab-main-d-aor-velero-ews1
+Node:             ip-10-112-142-180.us-west-2.compute.internal/10.112.142.180
+Start Time:       Thu, 12 Sep 2024 15:26:18 +0530
+Labels:           clusterSuffix=ews1
+                  clusterTitle=lab-main-d-aor-velero-ews1
+                  environmentShortName=lab
+                  partitionShortName=d
+                  pod-template-hash=56876984d7
+                  regionShortName=main
+                  serviceShortName=velero
+                  tags.datadoghq.com/env=lab
+                  tags.datadoghq.com/service=velero-ews1
+                  tags.datadoghq.com/version=2.0.22
+Annotations:      ad.datadoghq.com/upxs3.check_names: ["openmetrics"]
+                  ad.datadoghq.com/upxs3.init_configs: [{}]
+                  ad.datadoghq.com/upxs3.instances: [{"prometheus_url": "http://%%host%%:8085/metrics","namespace": "csp","metrics": ["*"]}]
+                  kubernetes.io/limit-ranger: LimitRanger plugin set: cpu, memory request for init container velero-plugin-for-aws
+                  rundeck/apply-timestamp: 2024-09-12 02:56:15 PDT (-0700)
+                  serviceVersion: 2.0.22
+Status:           Running
+IP:               100.64.81.120
+IPs:
+  IP:           100.64.81.120
+Controlled By:  ReplicaSet/lab-main-d-aor-velero-ews1-56876984d7
+Init Containers:
+  velero-plugin-for-aws:
+    Container ID:   containerd://50e4a56dfada56525aba91b3c463937b260ba75978c6545375b4e40ff7d3ecea
+    Image:          velero/velero-plugin-for-aws:v1.5.0
+    Image ID:       docker.io/velero/velero-plugin-for-aws@sha256:3d2ea7aab32d40ca70fb399fe7ebd6c99647c9c13af8b70581c1d9aedc22e347
+    Port:           <none>
+    Host Port:      <none>
+    State:          Terminated
+      Reason:       Completed
+      Exit Code:    0
+      Started:      Thu, 12 Sep 2024 15:26:18 +0530
+      Finished:     Thu, 12 Sep 2024 15:26:18 +0530
+    Ready:          True
+    Restart Count:  0
+    Requests:
+      cpu:     50m
+      memory:  100Mi
+    Environment:
+      AWS_STS_REGIONAL_ENDPOINTS:   regional
+      AWS_DEFAULT_REGION:           us-west-2
+      AWS_REGION:                   us-west-2
+      AWS_ROLE_ARN:                 arn:aws:iam::303027209135:role/OneCloud/CustomerManaged_Velero
+      AWS_WEB_IDENTITY_TOKEN_FILE:  /var/run/secrets/eks.amazonaws.com/serviceaccount/token
+    Mounts:
+      /target from plugins (rw)
+      /var/run/secrets/eks.amazonaws.com/serviceaccount from aws-iam-token (ro)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-mbl7l (ro)
+Containers:
+  velero:
+    Container ID:  containerd://bbdf1a0aed30fa643b04592f8575c9db3173056fa1c9061bf7071c080eeef72e
+    Image:         docker-lab.repo.theplatform.com/velero:v1.11.0
+    Image ID:      docker-lab.repo.theplatform.com/velero@sha256:93e6ff581bb7478119efb5918d3164d4bd63ad21abc5ef3ed3b8117c180a8f87
+    Port:          8085/TCP
+    Host Port:     0/TCP
+    Command:
+      /velero
+      server
+    Args:
+      --default-backup-storage-location=default
+      --default-volume-snapshot-locations=aws:us-west-2
+      --features=EnableRestic
+    State:          Running
+      Started:      Thu, 12 Sep 2024 15:33:19 +0530
+    Last State:     Terminated
+      Reason:       Error
+      Exit Code:    2
+      Started:      Thu, 12 Sep 2024 15:26:21 +0530
+      Finished:     Thu, 12 Sep 2024 15:33:17 +0530
+    Ready:          True
+    Restart Count:  1
+    Limits:
+      cpu:     2
+      memory:  6G
+    Requests:
+      cpu:     1200m
+      memory:  5G
+    Environment:
+      DD_ENV:                        (v1:metadata.labels['tags.datadoghq.com/env'])
+      DD_SERVICE:                    (v1:metadata.labels['tags.datadoghq.com/service'])
+      DD_VERSION:                    (v1:metadata.labels['tags.datadoghq.com/version'])
+      DD_AGENT_HOST:                 (v1:status.hostIP)
+      DD_PROFILING_ENABLED:         false
+      DD_APM_ENABLED:               true
+      AWS_STS_REGIONAL_ENDPOINTS:   regional
+      AWS_DEFAULT_REGION:           us-west-2
+      AWS_REGION:                   us-west-2
+      AWS_ROLE_ARN:                 arn:aws:iam::303027209135:role/OneCloud/CustomerManaged_Velero
+      AWS_WEB_IDENTITY_TOKEN_FILE:  /var/run/secrets/eks.amazonaws.com/serviceaccount/token
+    Mounts:
+      /plugins from plugins (rw)
+      /scratch from scratch (rw)
+      /var/run/secrets/eks.amazonaws.com/serviceaccount from aws-iam-token (ro)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-mbl7l (ro)
+  alpine-awscli:
+    Container ID:  containerd://e4906e56e8d9842b6163acc25851ecc59d05a9970b6addddf72be73fb6c68cbb
+    Image:         alpine:latest
+    Image ID:      docker.io/library/alpine@sha256:beefdbd8a1da6d2915566fde36db9db0b524eb737fc57cd1367effd16dc0d06d
+    Port:          <none>
+    Host Port:     <none>
+    Command:
+      sh
+    Args:
+      -c
+      while true; do sleep 3600; done
+    State:          Running
+      Started:      Thu, 12 Sep 2024 15:26:26 +0530
+    Ready:          True
+    Restart Count:  0
+    Limits:
+      cpu:     50m
+      memory:  100Mi
+    Requests:
+      cpu:     10m
+      memory:  50Mi
+    Environment:
+      AWS_REGION:                   us-west-2
+      AWS_STS_REGIONAL_ENDPOINTS:   regional
+      AWS_ROLE_ARN:                 arn:aws:iam::303027209135:role/OneCloud/CustomerManaged_Velero
+      AWS_WEB_IDENTITY_TOKEN_FILE:  /var/run/secrets/eks.amazonaws.com/serviceaccount/token
+    Mounts:
+      /plugins from plugins (rw)
+      /scratch from scratch (rw)
+      /var/run/secrets/eks.amazonaws.com/serviceaccount from aws-iam-token (ro)
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-mbl7l (ro)
+Conditions:
+  Type                        Status
+  PodReadyToStartContainers   True 
+  Initialized                 True 
+  Ready                       True 
+  ContainersReady             True 
+  PodScheduled                True 
+Volumes:
+  aws-iam-token:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  86400
+  lab-main-d-aor-velero-ews1:
+    Type:      ConfigMap (a volume populated by a ConfigMap)
+    Name:      lab-main-d-aor-velero-ews1
+    Optional:  false
+  scratch:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+  plugins:
+    Type:       EmptyDir (a temporary directory that shares a pod's lifetime)
+    Medium:     
+    SizeLimit:  <unset>
+  kube-api-access-mbl7l:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   Burstable
+Node-Selectors:              kubernetes.io/hostname=ip-10-112-142-180.us-west-2.compute.internal
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:                      <none>
+
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+  sravik158@INSML-52DPMD6M Downloads % kubectl logs lab-main-d-aor-restic-ews1-w94hf  -n velero | grep error
+Defaulted container "restic" out of: restic, velero-plugin-for-aws (init)
+time="2024-09-12T10:03:27Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"9e2114bb-12a8-4ad9-9e7f-db1bedc1b0ef\""
+time="2024-09-12T10:03:27Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"6fb8e22c-b240-485d-ac76-e7892882b915\""
+time="2024-09-12T10:03:27Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"a325941a-124b-45f9-af47-df3e6347ea9d\""
+time="2024-09-12T10:03:27Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"94a37052-799a-4f2a-98a7-91e1e8a210fc\""
+time="2024-09-12T10:03:27Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"87a13bd4-71f1-4b3d-8fab-d19a13bb7f66\""
+time="2024-09-12T10:03:28Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"58ed0d1d-4f21-4727-826e-0c7f076217bd\""
+time="2024-09-12T10:03:28Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"aadd05db-b40d-4faf-8697-94949318cee4\""
+time="2024-09-12T10:03:28Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"0056fe2a-7fda-4849-ae14-e18364f65d83\""
+time="2024-09-12T10:03:29Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"5dfb5c11-fed6-47e5-b36f-ba213d5d9a5f\""
+time="2024-09-12T10:03:30Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"9a5c1171-81d8-47b2-92d8-939fbacb4dbb\""
+time="2024-09-12T10:03:33Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"7086f35f-f17f-42ed-b400-3da8f6add1b4\""
+time="2024-09-12T10:03:38Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"a5bf1ea9-2d6e-4366-93c5-bd225d1f3bd4\""
+time="2024-09-12T10:03:48Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"c506ca61-75ca-4fa6-8fef-8ce965ade15a\""
+time="2024-09-12T10:04:09Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"bfa147f4-2f5a-4f96-8e31-bc3f652070dc\""
+time="2024-09-12T10:04:50Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"cca48edd-6a91-434b-a0b2-344f01e55922\""
+time="2024-09-12T10:06:12Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"30dbbee7-f912-41bf-b8cc-9f3b8923bb5e\""
+time="2024-09-12T10:08:56Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"c01d7295-c6c2-4601-8118-b8e07c0137d6\""
+time="2024-09-12T10:13:23Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"175ddbc2-fd56-4973-a4b0-88e9c865cab2\""
+time="2024-09-12T10:13:23Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"4a77bfef-9654-4791-818b-cd712727ae18\""
+time="2024-09-12T10:13:23Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"1f05119e-6bed-4c2f-bc71-e93769c48c1a\""
+time="2024-09-12T10:13:23Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"cf66c82f-5f4a-483e-ab26-c38483a92fa1\""
+time="2024-09-12T10:13:23Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"e98bf025-9573-4a7c-8f8f-0e85e8339299\""
+time="2024-09-12T10:13:24Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"35b9c477-fbe9-452f-9007-1c65679b022b\""
+time="2024-09-12T10:13:24Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"6197cd45-8dee-433e-b5c6-e50836c1e12a\""
+time="2024-09-12T10:13:24Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"73250077-e241-46e8-8303-3e130656a978\""
+time="2024-09-12T10:13:25Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"cbee19db-2f27-4206-b8cf-2670af1c2b97\""
+time="2024-09-12T10:13:26Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"7481e2ef-b596-4551-a57c-9c10ab8d81d7\""
+time="2024-09-12T10:13:29Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"4449844b-1231-4a33-8bda-36eebd353af6\""
+time="2024-09-12T10:13:34Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"4a3243ff-1cc9-4d3e-833a-b864d5918339\""
+time="2024-09-12T10:13:44Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"7e758780-3868-41c8-921e-ba63691bbf16\""
+time="2024-09-12T10:14:05Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"db98f4e4-71b2-4bf4-b36e-89878f9f4478\""
+time="2024-09-12T10:14:23Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"3dcd5113-a51e-44ab-ad39-d6de1c24bd70\""
+time="2024-09-12T10:14:46Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"81ab76a0-435c-4183-8727-1ad1998bbe1e\""
+time="2024-09-12T10:16:08Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"29e34463-9f4a-4a10-b5c9-e5e104c0f5a3\""
+time="2024-09-12T10:18:52Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"aabf907e-3968-4f5c-95eb-8383a5aec87f\""
+time="2024-09-12T10:24:19Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"eee30e7b-0615-454f-adde-4994f7f3c7f2\""
+time="2024-09-12T10:25:19Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"383194b9-fd28-434e-bfcf-47fdf258ff7c\""
+time="2024-09-12T10:35:15Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"6b21b216-3e8f-4857-ab71-288407646ceb\""
+time="2024-09-12T10:41:59Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"54ba09aa-a16e-4308-b950-0d6ce16d84f7\""
+time="2024-09-12T10:51:55Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"a9032d45-f59b-4ee8-b502-9f0726014ff6\""
+time="2024-09-12T10:58:39Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"ff5a01e1-a765-49b1-9f01-08c99fceb2a8\""
+time="2024-09-12T11:08:35Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"bbbdaff8-864d-4ad9-9283-1b51bee15241\""
+time="2024-09-12T11:15:19Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"118553eb-c8c6-4d07-8d9a-6b6a9c0ee4a3\""
+time="2024-09-12T11:25:15Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"454ec5a1-0405-4588-90a0-b603d274e110\""
+time="2024-09-12T11:31:59Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"2081091e-a788-4094-a081-257b6f488d6f\""
+time="2024-09-12T11:41:55Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"567c7ac3-4b03-4954-93c9-6158835d3361\""
+time="2024-09-12T11:48:39Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"63721480-3316-4ee1-83c3-e815a39f0e15\""
+time="2024-09-12T11:58:35Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"47b006d3-e014-44e1-80fa-5205753d4529\""
+time="2024-09-12T12:05:19Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"97edf4bd-c88f-460e-ad4e-3f9905a60888\""
+time="2024-09-12T12:15:15Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"598087f8-0089-495b-9a2c-cff89cd8402c\""
+time="2024-09-12T12:21:59Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"85cb011a-5744-47ae-b17d-c40fa60c0c79\""
+time="2024-09-12T12:31:55Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"f3e9f824-8473-480a-8173-f41b14387768\""
+time="2024-09-12T12:38:39Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"dadf7964-b645-4e98-ae82-94b99431361c\""
+time="2024-09-12T12:48:35Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"021d6f0a-984a-4f23-9093-ac73be0d3ce5\""
+time="2024-09-12T12:55:19Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"36654460-df37-44b8-abaf-a1ad3e71edf1\""
+time="2024-09-12T13:05:15Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"e70363af-1a3c-455e-be0f-2f8b0bb81ad7\""
+time="2024-09-12T13:11:59Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"184693f5-a771-4d27-bfa8-2153ccd13112\""
+time="2024-09-12T13:21:55Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"5534d573-3ce2-4325-81a6-d6922b9d3197\""
+time="2024-09-12T13:28:39Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"62585e19-bcc5-41b4-a4a2-e839a779e754\""
+time="2024-09-12T13:38:35Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"5dfc0b9b-6dc4-494d-98aa-e843b300d8f2\""
+time="2024-09-12T13:45:19Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"709a14de-741d-4a20-9314-cfc2e08284d6\""
+time="2024-09-12T13:55:15Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"02bc4920-e3c2-4440-a5ac-053780af4c70\""
+time="2024-09-12T14:01:59Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"f340915f-0cc2-4524-bcaa-c025d4aebe2d\""
+time="2024-09-12T14:11:55Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"fcbb3926-58e6-42b0-b239-77fd5a0bfdb9\""
+time="2024-09-12T14:18:39Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"ba92419c-8721-4b01-a777-399764160175\""
+time="2024-09-12T14:28:36Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"6c188352-3677-40ab-b903-2446da614781\""
+time="2024-09-12T14:35:20Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"5caa1db8-92f8-4027-911f-9d7d862022e7\""
+time="2024-09-12T14:45:16Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"ca2840f8-e558-4a60-9ac9-e48cb4d41577\""
+time="2024-09-12T14:52:00Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"b2632159-6225-4cfa-8fd2-ab54490e9d92\""
+time="2024-09-12T15:01:56Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"6c28d0fe-415e-4d1f-a9f5-8fc15ce589d6\""
+time="2024-09-12T15:08:40Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"20b9aec6-aa98-4a8e-8917-cc51af7206bd\""
+time="2024-09-12T15:18:36Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"4aae2990-dfc8-416e-b237-a9784c3ac920\""
+time="2024-09-12T15:25:20Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"2738b5eb-f2cb-4933-9deb-5eef5e42d534\""
+time="2024-09-12T15:35:16Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"c2effe71-6e77-4c29-a147-c311b494a1a6\""
+time="2024-09-12T15:42:00Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"0c4808e2-7f39-470f-b743-b5a01a22a3d6\""
+time="2024-09-12T15:51:56Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"94866bd5-d760-449e-bc59-63f3392057fb\""
+time="2024-09-12T15:58:40Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"b34de1d5-6d86-4ced-bf26-44eed260a1f2\""
+time="2024-09-12T16:08:36Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"a8283c3a-5afc-4a8a-b912-853402a581be\""
+time="2024-09-12T16:15:20Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"8056bc9e-d7db-4f3d-8267-ebe5ddc3c2b8\""
+time="2024-09-12T16:25:16Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"44232b4e-d2b7-413f-a297-382fdc8dd77a\""
+time="2024-09-12T16:32:00Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"3f6cf6ac-de55-4000-bff5-984873c779bc\""
+time="2024-09-12T16:41:56Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"fc4e99f2-2189-44e4-8b90-e325a45954e1\""
+time="2024-09-12T16:48:40Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-9ff46c67-0b26-49c9-948e-59b460402f53 namespace=velero reconcileID="\"5820be55-3ee3-49da-9518-d5eb9c443d18\""
+time="2024-09-12T16:58:36Z" level=error msg="Reconciler error" controller=downloadrequest controllerGroup=velero.io controllerKind=DownloadRequest downloadRequest="{\"name\":\"nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435\",\"namespace\":\"velero\"}" error="unsupported download target kind \"BackupVolumeInfos\"" error.file="/go/src/github.com/vmware-tanzu/velero/pkg/persistence/object_store.go:589" error.function="github.com/vmware-tanzu/velero/pkg/persistence.(*objectBackupStore).GetDownloadURL" logSource="/go/pkg/mod/github.com/bombsimon/logrusr/v3@v3.0.0/logrusr.go:123" name=nginx-backup-95cdb9cf-f121-422d-95f1-9224e973c435 namespace=velero reconcileID="\"26692875-6393-4d1b-ac7e-a9e3da414840\""
+sravik158@INSML-52DPMD6M Downloads % 
+
+
+
+  ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+  
