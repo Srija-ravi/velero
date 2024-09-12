@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: lab-main-d-aor-restic-ews1
+  namespace: velero
+  labels:
+    environmentShortName: lab
+    regionShortName: main
+    partitionShortName: d
+    serviceShortName: velero
+    clusterSuffix: ews1
+    clusterTitle: lab-main-d-aor-restic-ews1
+    tags.datadoghq.com/env: lab
+    tags.datadoghq.com/service: restic-ews1
+    tags.datadoghq.com/version: 2.0.22
+  annotations:
+    cts/k8cluster: eks1
+spec:
+  selector:
+    matchLabels:
+      clusterTitle: lab-main-d-aor-restic-ews1
+  template:
+    metadata:
+      labels:
+        environmentShortName: lab
+        regionShortName: main
+        partitionShortName: d
+        serviceShortName: velero
+        clusterSuffix: ews1
+        clusterTitle: lab-main-d-aor-restic-ews1
+        tags.datadoghq.com/env: lab
+        tags.datadoghq.com/service: restic-ews1
+        tags.datadoghq.com/version: 2.0.22
+      annotations:
+        serviceVersion: 2.0.22
+    spec:
+      serviceAccountName: lab-main-d-aor-velero-ews1
+      nodeSelector:
+        kubernetes.io/hostname: ip-10-112-142-180.us-west-2.compute.internal
+        
+      initContainers:
+        - name: velero-plugin-for-aws
+          image: velero/velero-plugin-for-aws:v1.5.0
+          resources:
+            requests:
+              cpu: 50m
+              memory: 50Mi
+            limits:
+              cpu: 100m
+              memory: 100Mi
+          volumeMounts:
+            - mountPath: /target
+              name: plugins
+      containers:
+        - name: restic
+          image: velero/velero:v1.11.0
+          imagePullPolicy: Always
+          command:
+            - /velero
+          resources:
+            requests:
+              cpu: 500m
+              memory: 200Mi
+            limits:
+              cpu: 1000m
+              memory: 300Mi
+          args:
+            - server
+            - --features=EnableRestic
+          volumeMounts:
+            - name: scratch
+              mountPath: /scratch
+            - name: plugins
+              mountPath: /plugins
+            - name: var
+              mountPath: /var/lib/kubelet/pods
+              mountPropagation: HostToContainer
+      volumes:
+        - name: lab-main-d-aor-velero-ews1
+          configMap:
+            name: lab-main-d-aor-velero-ews1
+        - name: scratch
+          emptyDir: {}
+        - name: plugins
+          emptyDir: {}
+        - name: var
+          hostPath:
+            path: /var/lib/kubelet/pods
+            type: Directory
