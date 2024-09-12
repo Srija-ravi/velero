@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: lab-main-d-aor-velero-ews1
+  namespace: velero
+  labels:
+    environmentShortName: lab
+    regionShortName: main
+    partitionShortName: d
+    serviceShortName: velero
+    clusterSuffix: ews1
+    clusterTitle: lab-main-d-aor-velero-ews1
+spec:
+  selector:
+    clusterTitle: lab-main-d-aor-velero-ews1
+  ports:
+  - protocol: TCP
+    port: 443
+    targetPort: 8085
